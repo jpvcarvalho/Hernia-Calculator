@@ -4,53 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadoras para Hérnia Ventral e IMC</title>
+    <!-- Tailwind CSS CDN for utility-first styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for 'Inter' typeface -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Custom styles for the body and result cards */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', sans-serif; /* Apply Inter font to the entire body */
         }
         .result-card {
-            transition: all 0.3s ease-in-out;
-            max-height: 0;
-            overflow: hidden;
-            opacity: 0;
+            transition: all 0.3s ease-in-out; /* Smooth transition for showing/hiding result cards */
+            max-height: 0; /* Initially hide content by setting max-height to 0 */
+            overflow: hidden; /* Hide overflow content */
+            opacity: 0; /* Initially transparent */
         }
         .result-card.show {
-            max-height: 800px;
-            opacity: 1;
-            margin-top: 1.5rem;
+            max-height: 800px; /* Expand max-height to show content */
+            opacity: 1; /* Make visible */
+            margin-top: 1.5rem; /* Add top margin when shown */
         }
+        /* Styles for info icons and tooltips */
         .info-icon {
-            cursor: pointer;
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            margin-left: 8px;
+            cursor: pointer; /* Indicate interactivity */
+            position: relative; /* For tooltip positioning */
+            display: inline-flex; /* Align icon and text */
+            align-items: center; /* Center vertically */
+            margin-left: 8px; /* Spacing from label */
         }
         .tooltip {
-            visibility: hidden;
-            width: 280px;
-            background-color: #333;
-            color: #fff;
-            text-align: left;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 10;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -140px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.8rem;
-            line-height: 1.4;
+            visibility: hidden; /* Hidden by default */
+            width: 280px; /* Fixed width for tooltip content */
+            background-color: #333; /* Dark background */
+            color: #fff; /* White text */
+            text-align: left; /* Left-align text */
+            border-radius: 6px; /* Rounded corners */
+            padding: 8px; /* Padding inside tooltip */
+            position: absolute; /* Absolute positioning relative to info-icon */
+            z-index: 10; /* Ensure tooltip is on top */
+            bottom: 125%; /* Position above the icon */
+            left: 50%; /* Center horizontally */
+            margin-left: -140px; /* Adjust for centering */
+            opacity: 0; /* Initially transparent */
+            transition: opacity 0.3s; /* Smooth fade-in/out */
+            font-size: 0.8rem; /* Smaller font size */
+            line-height: 1.4; /* Improved readability */
+            pointer-events: none; /* Allow clicks to pass through to elements behind */
         }
         .info-icon:hover .tooltip {
-            visibility: visible;
-            opacity: 1;
+            visibility: visible; /* Make visible on hover */
+            opacity: 1; /* Fade in on hover */
+        }
+
+        /* Modal specific styles */
+        .modal-overlay {
+            position: fixed; /* Fixed position to cover the entire viewport */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+            display: flex; /* Use flexbox for centering content */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            z-index: 1000; /* Ensure it's on top of everything */
+            opacity: 0; /* Initially hidden */
+            visibility: hidden; /* Initially hidden */
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; /* Smooth transition */
+        }
+        .modal-overlay.show {
+            opacity: 1; /* Show when 'show' class is added */
+            visibility: visible; /* Make visible when 'show' class is added */
+        }
+        .modal-content {
+            background-color: white; /* White background for modal content */
+            padding: 2rem; /* Padding inside the modal */
+            border-radius: 0.75rem; /* Rounded corners */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            max-width: 90%; /* Max width for responsiveness */
+            width: 400px; /* Fixed width for larger screens */
+            text-align: center; /* Center text */
+            position: relative; /* For close button positioning */
+        }
+        .modal-close-button {
+            position: absolute; /* Position close button absolutely */
+            top: 0.75rem; /* Top right corner */
+            right: 0.75rem;
+            background: none; /* No background */
+            border: none; /* No border */
+            font-size: 1.5rem; /* Larger font size for close icon */
+            cursor: pointer; /* Pointer cursor */
+            color: #6b7280; /* Gray color */
         }
     </style>
 </head>
@@ -58,6 +104,15 @@
 
     <div class="container mx-auto p-4 md:p-8 max-w-5xl">
         <header class="text-center mb-10">
+            <!-- Logo Section -->
+            <div class="flex items-center justify-center mb-4">
+                <!-- Medical Cross SVG Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-sky-600 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.5 6a.5.5 0 00-1 0v2.5H6a.5.5 0 000 1h2.5V12a.5.5 0 001 0V9.5H12a.5.5 0 000-1H9.5V6z" clip-rule="evenodd" />
+                </svg>
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">MedCalc</h1>
+            </div>
+            
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Calculadoras de Apoio para Hérnia Ventral e IMC</h1>
             <p class="mt-2 text-md md:text-lg text-gray-600">Ferramenta para calcular o IMC e avaliar a complexidade da hérnia com a Equação de Carbonell (RDR) e o Índice de Tanaka.</p>
             <div class="mt-4 max-w-3xl mx-auto text-sm text-red-700 bg-red-100 p-3 rounded-lg border border-red-200">
@@ -146,7 +201,7 @@
                 
                 <figure class="mb-4">
                     <img src="https://i.imgur.com/Eio5bWC.jpeg" 
-                         alt="Diagrama mostrando as medidas dos três eixos (craniocaudal, anteroposterior, transverso) para cálculo do volume elipsoidal da hérnia." 
+                         alt="Diagrama de uma Tomografia Computadorizada em corte axial mostrando as medidas dos três eixos (craniocaudal, anteroposterior, transverso) para cálculo do volume elipsoidal da hérnia." 
                          class="w-full max-w-md mx-auto rounded-lg object-contain bg-gray-200 p-1"
                          onerror="this.onerror=null;this.src='https://placehold.co/600x300/e2e8f0/4a5568?text=Ilustração+Indisponível';">
                     <figcaption class="text-center text-xs text-gray-600 mt-2">
@@ -212,7 +267,29 @@
 
     </div>
 
+    <!-- Custom Modal for Alerts -->
+    <div id="customAlertModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-button" onclick="hideAlertModal()">&times;</button>
+            <p id="alertMessage" class="text-lg font-semibold text-gray-800"></p>
+            <button onclick="hideAlertModal()" class="mt-6 bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-colors">
+                OK
+            </button>
+        </div>
+    </div>
+
     <script>
+        // Function to show the custom alert modal
+        function showAlertModal(message) {
+            document.getElementById('alertMessage').innerText = message;
+            document.getElementById('customAlertModal').classList.add('show');
+        }
+
+        // Function to hide the custom alert modal
+        function hideAlertModal() {
+            document.getElementById('customAlertModal').classList.remove('show');
+        }
+
         // --- Lógica para a Calculadora de IMC ---
         const weightInput = document.getElementById('weight');
         const heightInput = document.getElementById('height');
@@ -224,16 +301,18 @@
             const weight = parseFloat(weightInput.value);
             const heightCm = parseFloat(heightInput.value);
 
+            // Input validation using the custom alert modal
             if (isNaN(weight) || isNaN(heightCm) || weight <= 0 || heightCm <= 0) {
-                alert('Por favor, insira valores de peso e altura válidos.');
+                showAlertModal('Por favor, insira valores de peso e altura válidos.');
                 return;
             }
 
-            const heightM = heightCm / 100;
-            const imc = weight / (heightM * heightM);
+            const heightM = heightCm / 100; // Convert height from cm to meters
+            const imc = weight / (heightM * heightM); // Calculate BMI
             let category = '';
             let colorClass = '';
 
+            // Determine BMI category and associated color class
             if (imc < 18.5) {
                 category = 'Abaixo do peso';
                 colorClass = 'text-blue-700';
@@ -254,11 +333,12 @@
                 colorClass = 'text-red-900';
             }
             
+            // Display IMC result
             imcResultText.innerHTML = `
                 <p>Seu IMC é <strong class="text-xl">${imc.toFixed(2)}</strong>.</p>
                 <p>Classificação: <strong class="text-lg ${colorClass}">${category}</strong>.</p>
             `;
-            imcResultCard.classList.add('show');
+            imcResultCard.classList.add('show'); // Show the result card
         });
 
         // --- Lógica para a Equação de Carbonell (RDR) ---
@@ -274,14 +354,16 @@
             const re = parseFloat(rectusEsquerdoInput.value);
             const td = parseFloat(tamanhoDefeitoInput.value);
 
+            // Input validation using the custom alert modal
             if (isNaN(rd) || isNaN(re) || isNaN(td) || rd <= 0 || re <= 0 || td <= 0) {
-                alert('Por favor, insira valores positivos válidos para todos os campos da Equação de Carbonell.');
+                showAlertModal('Por favor, insira valores positivos válidos para todos os campos da Equação de Carbonell.');
                 return;
             }
 
-            const rdr = (rd + re) / td;
+            const rdr = (rd + re) / td; // Calculate Relative Dominance Ratio (RDR)
             let interpretation = '';
 
+            // Interpret RDR value
             if (rdr > 2) {
                 interpretation = `<strong>Complexidade: Baixa.</strong><br><br>Um RDR alto sugere que a largura dos músculos retos é significativamente maior que a do defeito. O fechamento da linha média é provável sem a necessidade de técnicas de separação de componentes.`;
             } else if (rdr > 1 && rdr <= 2) {
@@ -290,8 +372,9 @@
                 interpretation = `<strong class="text-red-700">Complexidade: Alta (Grande Perda de Domínio).</strong><br><br>O defeito é maior que a largura combinada dos músculos retos, indicando uma perda de domínio significativa. Técnicas de separação de componentes são muito provavelmente necessárias para o fechamento da parede abdominal.`;
             }
 
+            // Display RDR result
             rdrResultText.innerHTML = `<strong class="text-indigo-800">RDR Calculado: ${rdr.toFixed(2)}</strong><br><br>${interpretation}`;
-            rdrResultCard.classList.add('show');
+            rdrResultCard.classList.add('show'); // Show the result card
         });
 
         // --- Lógica para o Índice de Tanaka ---
@@ -307,12 +390,14 @@
             const cavityDB = parseFloat(document.getElementById('cavityB').value);
             const cavityDC = parseFloat(document.getElementById('cavityC').value);
 
+            // Input validation using the custom alert modal
             if (isNaN(herniaDA) || isNaN(herniaDB) || isNaN(herniaDC) || isNaN(cavityDA) || isNaN(cavityDB) || isNaN(cavityDC) ||
                 herniaDA <= 0 || herniaDB <= 0 || herniaDC <= 0 || cavityDA <= 0 || cavityDB <= 0 || cavityDC <= 0) {
-                alert('Por favor, insira valores positivos válidos para todas as dimensões (diâmetros).');
+                showAlertModal('Por favor, insira valores positivos válidos para todas as dimensões (diâmetros).');
                 return;
             }
 
+            // Calculate radii from diameters (assuming ellipsoid volume formula uses radii)
             const herniaA = herniaDA / 2;
             const herniaB = herniaDB / 2;
             const herniaC = herniaDC / 2;
@@ -320,26 +405,28 @@
             const cavityB = cavityDB / 2;
             const cavityC = cavityDC / 2;
 
-            const vsh = (4/3) * Math.PI * herniaA * herniaB * herniaC;
-            const vca = (4/3) * Math.PI * cavityA * cavityB * cavityC;
+            // Calculate volumes using the ellipsoid volume formula (4/3 * PI * a * b * c)
+            const vsh = (4/3) * Math.PI * herniaA * herniaB * herniaC; // Volume of Hernia Sac
+            const vca = (4/3) * Math.PI * cavityA * cavityB * cavityC; // Volume of Abdominal Cavity
 
-            const tanakaIndex = (vsh / vca) * 100;
+            const tanakaIndex = (vsh / vca) * 100; // Calculate Tanaka Index
             let interpretation = '';
 
+            // Interpret Tanaka Index
             if (tanakaIndex < 20) {
                 interpretation = `<strong>Risco de HIA: Baixo.</strong><br><br>O fechamento primário da fáscia durante a reconstrução da parede é provavelmente seguro do ponto de vista da pressão intra-abdominal.`;
             } else {
                 interpretation = `<strong class="text-red-700">Risco de HIA: Elevado.</strong><br><br>Há um risco significativo de desenvolver síndrome compartimental abdominal se o fechamento da parede for realizado sob tensão. É fortemente recomendado considerar estratégias para aumentar o volume da cavidade abdominal antes da cirurgia (ex: pneumoperitônio progressivo, toxina botulínica).`;
             }
             
+            // Display Tanaka Index result
             tanakaResultText.innerHTML = `
                 <p class="mb-2">Volume do Saco Herniário (VSH) calculado: <strong>${vsh.toFixed(2)} cm³</strong></p>
                 <p class="mb-3">Volume da Cavidade Abdominal (VCA) calculado: <strong>${vca.toFixed(2)} cm³</strong></p>
                 <hr class="my-3">
                 <strong class="text-teal-800 text-lg">Índice de Tanaka: ${tanakaIndex.toFixed(2)}%</strong><br><br>${interpretation}`;
-            tanakaResultCard.classList.add('show');
+            tanakaResultCard.classList.add('show'); // Show the result card
         });
-
     </script>
 </body>
 </html>
