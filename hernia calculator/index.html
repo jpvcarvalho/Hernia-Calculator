@@ -290,6 +290,11 @@
             document.getElementById('customAlertModal').classList.remove('show');
         }
 
+        // Helper to parse numbers accepting comma as decimal separator
+        function parseNumber(value) {
+            return parseFloat(String(value).replace(',', '.'));
+        }
+
         // --- Lógica para a Calculadora de IMC ---
         const weightInput = document.getElementById('weight');
         const heightInput = document.getElementById('height');
@@ -298,8 +303,8 @@
         const imcResultText = document.getElementById('imcResultText');
 
         calculateIMCBtn.addEventListener('click', () => {
-            const weight = parseFloat(weightInput.value);
-            const heightCm = parseFloat(heightInput.value);
+            const weight = parseNumber(weightInput.value);
+            const heightCm = parseNumber(heightInput.value);
 
             // Input validation using the custom alert modal
             if (isNaN(weight) || isNaN(heightCm) || weight <= 0 || heightCm <= 0) {
@@ -350,9 +355,9 @@
         const rdrResultText = document.getElementById('rdrResultText');
 
         calculateRDRBtn.addEventListener('click', () => {
-            const rd = parseFloat(rectusDireitoInput.value);
-            const re = parseFloat(rectusEsquerdoInput.value);
-            const td = parseFloat(tamanhoDefeitoInput.value);
+            const rd = parseNumber(rectusDireitoInput.value);
+            const re = parseNumber(rectusEsquerdoInput.value);
+            const td = parseNumber(tamanhoDefeitoInput.value);
 
             // Input validation using the custom alert modal
             if (isNaN(rd) || isNaN(re) || isNaN(td) || rd <= 0 || re <= 0 || td <= 0) {
@@ -383,12 +388,12 @@
         const tanakaResultText = document.getElementById('tanakaResultText');
 
         calculateTanakaBtn.addEventListener('click', () => {
-            const herniaDA = parseFloat(document.getElementById('herniaA').value);
-            const herniaDB = parseFloat(document.getElementById('herniaB').value);
-            const herniaDC = parseFloat(document.getElementById('herniaC').value);
-            const cavityDA = parseFloat(document.getElementById('cavityA').value);
-            const cavityDB = parseFloat(document.getElementById('cavityB').value);
-            const cavityDC = parseFloat(document.getElementById('cavityC').value);
+            const herniaDA = parseNumber(document.getElementById('herniaA').value);
+            const herniaDB = parseNumber(document.getElementById('herniaB').value);
+            const herniaDC = parseNumber(document.getElementById('herniaC').value);
+            const cavityDA = parseNumber(document.getElementById('cavityA').value);
+            const cavityDB = parseNumber(document.getElementById('cavityB').value);
+            const cavityDC = parseNumber(document.getElementById('cavityC').value);
 
             // Input validation using the custom alert modal
             if (isNaN(herniaDA) || isNaN(herniaDB) || isNaN(herniaDC) || isNaN(cavityDA) || isNaN(cavityDB) || isNaN(cavityDC) ||
